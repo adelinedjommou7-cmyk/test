@@ -1,0 +1,43 @@
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+
+abstract class NetworkInfo {
+  Future<bool> isConnected();
+}
+
+class NetworkInfoImpl implements NetworkInfo {
+  final InternetConnectionChecker connectionChecker;
+
+  NetworkInfoImpl(this.connectionChecker);
+
+  @override
+  Future<bool> isConnected() async {
+    bool result = await connectionChecker.hasConnection;
+    if (result) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+
+
+// abstract class NetworkInfo {
+//   Future<bool> get isConnected;
+// }
+
+// class NetworkInfoImpl implements NetworkInfo {
+//   final InternetConnectionChecker connectionChecker;
+
+//   NetworkInfoImpl(this.connectionChecker);
+
+//   @override
+//   Future<bool> get isConnected async {
+//     bool result = await connectionChecker.hasConnection;
+//     if (result) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   }
+// }

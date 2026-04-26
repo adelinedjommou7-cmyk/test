@@ -1,0 +1,75 @@
+Ressources sans localLink correspondant dans "Mes ressources"
+================================================================
+Total : 26 ressources non appariées
+
+Ces ressources sont uniquement disponibles en ligne.
+Aucun fichier local correspondant n'a été trouvé.
+
+──────────────────────────────────────────────────────────────
+[JEUX NON PRÉSENTS LOCALEMENT]
+──────────────────────────────────────────────────────────────
+- Jeu- Autour du monde
+  → https://storage.googleapis.com/portfolioseeva/Autour du monde - Storyline output/story.html
+
+- Mots cachés Série 1 : L'été
+  → https://storage.googleapis.com/portfolioseeva/Jeu - Mots cachés - L'été/index.html
+
+- Mots cachés Série 2 : L'hiver
+  → https://storage.googleapis.com/portfolioseeva/Jeu - Mots cachés - L'hiver/index.html
+
+- Mots cachés Série 3 : Le printemps
+  → https://storage.googleapis.com/portfolioseeva/Jeu - Mots cachés - Le printemps/index.html
+
+- Mots cachés Série 4 : L'automne
+  → https://storage.googleapis.com/portfolioseeva/Jeu - Mots cachés - L'automne/index.html
+
+- Course au sommet
+  → https://storage.googleapis.com/portfolioseeva/Jeu-Serpent échelles/index.html
+
+- Champions des équations
+  → https://storage.googleapis.com/portfolioseeva/Jeu-Champions des équations/index.html
+
+- Maths au hasard
+  → https://storage.googleapis.com/portfolioseeva/Jeu - Maths au hasard/index.html
+
+- Ma maison de rêve
+  → https://storage.googleapis.com/portfolioseeva/Jeu - Ma maison de rêve/index.html
+
+- Jeu d'arithmétique élémentaire
+  → https://storage.googleapis.com/portfolioseeva/Jeu d'arithmétique-Élémentaire/index.html
+
+- Casse-tete - le continent africain
+  → https://storage.googleapis.com/portfolioseeva/Test jeux Mois histoire Noirs/Puzzle-continent-africain/index.html
+
+──────────────────────────────────────────────────────────────
+[BANQUES STIM NON PRÉSENTES LOCALEMENT]
+──────────────────────────────────────────────────────────────
+- Banque de projets STIM (1)
+  → https://storage.googleapis.com/portfolioseeva/Banque projets STIM-1/index.html
+
+- BAnque de projets STIM 2
+  → https://storage.googleapis.com/portfolioseeva/Banque projets STIM-2/index.html
+
+- Banque de projets STIM 3
+  → https://storage.googleapis.com/portfolioseeva/Banque projets STIM-3/index.html
+
+──────────────────────────────────────────────────────────────
+[FICHIERS GOOGLE DRIVE (téléchargement direct, pas de chemin local)]
+──────────────────────────────────────────────────────────────
+- Mon cahier d'activité pour la maternelle
+- Cahier de coloriage - La rentrée scolaire
+- Cahier d'activités - La rentrée scolaire(1ère année)
+- Cahier d'activités - La rentrée scolaire(2e année)
+- Cahiers d'activités- Rentrée scolaire(3e année)
+- Présentation sur le Jour du souvenir
+- Cahier d'activités- Le texte descriptif
+
+──────────────────────────────────────────────────────────────
+[PDFs GOOGLE STORAGE (non inclus dans "Mes ressource")]
+──────────────────────────────────────────────────────────────
+- Cahier de coloriage- Mon chandail de Noel
+- Carnet de lecture
+- Mon cahier d'écriture- Noël
+- Cahier de lecture et d'activités- Les métiers (6-8 ans)
+- Livret de lecture - Les animaux de la savane - Portraits illustrés
+

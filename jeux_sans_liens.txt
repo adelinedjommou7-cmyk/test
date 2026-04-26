@@ -1,0 +1,13 @@
+Jeux en ligne sans localLink ni followLink
+==========================================
+
+1. Exerce-toi...Calcul 6e année
+2. Exerce-toi...Calcul 5e année
+3. Exerce-toi... Calcul 4e année
+4. Exerce-toi ... Calcul 3e année
+5. Exerce-toi...Calcul 2e année
+6. Exerce-toi... Calcul 1ère année
+7. Générateur de sujets d'écriture
+8. Testez vos connaissances sur la francophonie canadienne
+
+Total : 8 jeux
