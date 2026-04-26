@@ -1,0 +1,28 @@
+Ressources sans localLink correspondant dans "Mes ressources"
+================================================================
+Total : 5 ressources non appariées
+
+Ces ressources sont uniquement disponibles en ligne.
+Aucun fichier local correspondant n'a été trouvé.
+
+──────────────────────────────────────────────────────────────
+[JEUX NON PRÉSENTS LOCALEMENT]
+──────────────────────────────────────────────────────────────
+- Jeu- Autour du monde
+  → https://storage.googleapis.com/portfolioseeva/Autour du monde - Storyline output/story.html
+
+- Mots cachés Série 4 : L'automne
+  → https://storage.googleapis.com/portfolioseeva/Jeu - Mots cachés - L'automne/index.html
+ 
+──────────────────────────────────────────────────────────────
+[BANQUES STIM NON PRÉSENTES LOCALEMENT]
+──────────────────────────────────────────────────────────────
+- Banque de projets STIM (1)
+  → https://storage.googleapis.com/portfolioseeva/Banque projets STIM-1/index.html
+
+- BAnque de projets STIM 2
+  → https://storage.googleapis.com/portfolioseeva/Banque projets STIM-2/index.html
+
+- Banque de projets STIM 3
+  → https://storage.googleapis.com/portfolioseeva/Banque projets STIM-3/index.html
+ 

@@ -1,0 +1,276 @@
+import 'dart:math';
+
+import 'package:clipboard/clipboard.dart';
+import 'package:example/helpers/responsive_helper.dart';
+import 'package:example/models/ressources.dart';
+import 'package:example/provider/providers.dart';
+import 'package:example/screens/home/presentation/home.dart';
+import 'package:example/screens/pagination/custom_paginator.dart';
+import 'package:example/screens/pagination/paginate.dart';
+import 'package:example/screens/ressources/core/domaine/ressources_item_page.dart';
+import 'package:example/screens/widget/custom_pagination.dart';
+import 'package:example/screens/widget/custom_pagination_option.dart';
+import 'package:example/widgets/custom_gridview.dart';
+import 'package:example/widgets/empty_page.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' as m;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
+
+class FichesActivityPage extends ConsumerStatefulWidget {
+  const FichesActivityPage(
+      {super.key,
+      this.title = 'Activités en ligne',
+      this.typeId = '6',
+      this.data});
+  final List<Ressources>? data;
+  final String typeId;
+  final String title;
+  @override
+  _FichesActivityPageState createState() => _FichesActivityPageState();
+}
+
+class _FichesActivityPageState extends ConsumerState<FichesActivityPage>
+    with TickerProviderStateMixin {
+  String filterText = '';
+
+  List<Ressources> displayElements = [];
+  List<Ressources> display = [];
+
+  final TextEditingController _searchController = TextEditingController();
+  late List<Ressources> _filteredActivities;
+
+  @override
+  void initState() {
+    super.initState();
+    // Future.microtask(() => ref
+    //     .watch(ressourcesNotifierProvider.notifier)
+    //     .fetchRessource(typeId: widget.typeId));
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _filterActivities();
+      displayElements = widget.data!;
+    });
+    _searchController.addListener(_filterActivities);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  static const pageSize = 20;
+  ScrollController? controller;
+  void _filterActivities() {
+    final activities = ref.read(filteredActivityProvider(widget.typeId));
+    activities.when(
+      data: (data) {
+        displayElements = data.where((activity) {
+          final searchLower = _searchController.text.toLowerCase();
+          final data = activity.title!.toLowerCase().contains(searchLower);
+          return data;
+        }).toList();
+        setState(() {
+          getPaginateData(displayElements);
+        });
+        if (mounted) setState(() {});
+        _filteredActivities = displayElements;
+      },
+      error: (error, stack) => _filteredActivities = [],
+      loading: () => _filteredActivities = [],
+    );
+  }
+
+  void groupPerLetter(List<Ressources> elements) {
+    setState(() {
+      displayElements = elements;
+      display.addAll(elements);
+    });
+  }
+
+  RessourceItemPaged getPaginateData(List<Ressources> elements,
+      {int page = 1}) {
+    int perPage = ref.watch(pageLimitProvider);
+    int offset = (page - 1) * perPage;
+    final int totalSize = (elements.length / perPage).ceil();
+
+    final data = elements
+        .sublist(offset, min(offset + perPage, elements.length))
+        .map((e) => e)
+        .toList();
+
+    print(' page: $page, indexInPage: ${data.length}');
+
+    return RessourceItemPaged(
+        page: page,
+        data: data,
+        hasNext: page < totalSize,
+        hasPrev: page > 1,
+        perPage: data.length,
+        dataCount: elements.length,
+        totalPages: totalSize);
+  }
+
+  _onPageLimitChanged(int? limit, List<Ressources>? data) async {
+    setState(() {
+      ref.read(currentPageProvider.notifier).state = 1;
+      ref.read(pageLimitProvider.notifier).state = limit!;
+      ref.read(dataPageProvider.notifier).state =
+          getPaginateData(data!, page: 1).data;
+    });
+
+    // await _getSampleData();
+  }
+
+  _onChangePage(int page, List<Ressources> data) async {
+    setState(() {
+      ref.read(currentPageProvider.notifier).state = page;
+      ref.read(dataPageProvider.notifier).state =
+          getPaginateData(data, page: page).data;
+    });
+    // await _getSampleData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    assert(debugCheckHasFluentTheme(context));
+    // ref
+    //     .watch(ressourcesNotifierProvider.notifier)
+    //     .fetchRessource(typeId: widget.typeId);
+    final state = ref.read(activityNotifierProvider.notifier).state;
+    final ResponsiveHelper _respHelper = ResponsiveHelper(context: context);
+    final entrie = FluentIcons.allIcons.entries.where(
+      (icon) =>
+          filterText.isEmpty ||
+          // Remove '_'
+          icon.key
+              .replaceAll('_', '')
+              // toLowerCase
+              .toLowerCase()
+              .contains(filterText
+                  .toLowerCase()
+                  // Remove spaces
+                  .replaceAll(' ', '')),
+    );
+
+    return ScaffoldPage(
+        header: PageHeader(
+          title: Text(widget.title),
+          commandBar: SizedBox(
+            width: 240.0,
+            child: Tooltip(
+              message: 'Recherche par title, categorie, niveau...',
+              child: TextBox(
+                // controller: _searchController,
+                suffix: const Icon(FluentIcons.search),
+                placeholder: 'Rechercher une activité',
+                onChanged: (value) => setState(() {
+                  print(value);
+                  ref.read(activityNotifierProvider.notifier).searchRessource(
+                      typeId: widget.typeId, searchItem: value);
+                }),
+              ),
+            ),
+          ),
+        ),
+        bottomBar: SizedBox(
+          width: double.infinity,
+          child: state.map(
+            initial: (value) {
+              return Container();
+            },
+            loadInProgress: (value) {
+              return const InfoBar(
+                title: Text('Conseil:'),
+                content: Text(
+                  'Vous pouvez cliquer sur n\'importe quelle item pour consulter ces details !',
+                ),
+              );
+            },
+            loadSuccess: (value) {
+              final data = value.result;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomPaginationOptions(
+                    limitPerPage: ref.watch(pageLimitProvider),
+                    backgroundColor: Colors.grey,
+                    // textStyle: _textStyle,
+                    pageLimitOptions: ref.watch(pageLimitOptionsProvider),
+                    onPageLimitChanged: (p) {
+                      _onPageLimitChanged(p, data);
+                    },
+                    text: 'éléments par page',
+                  ),
+                  CustomPagination(
+                    currentPage: ref.watch(currentPageProvider),
+                    limitPerPage: ref.watch(pageLimitProvider),
+                    totalDataCount: data!.isNotEmpty
+                        ? data.length
+                        : ref.watch(totalDataCountProvider),
+                    onPreviousPage: (p) {
+                      _onChangePage(p, data);
+                    },
+                    onBackToFirstPage: (p) {
+                      _onChangePage(p, data);
+                    },
+                    onNextPage: (p) {
+                      _onChangePage(p, data);
+                    },
+                    onGoToLastPage: (p) {
+                      _onChangePage(p, data);
+                    },
+                    previousPageIcon: m.Icons.keyboard_arrow_left,
+                    backToFirstPageIcon: m.Icons.first_page,
+                    nextPageIcon: m.Icons.keyboard_arrow_right,
+                    goToLastPageIcon: m.Icons.last_page,
+                  ),
+                ],
+              );
+            },
+            loadFailure: (value) {
+              return Container();
+            },
+          ),
+        ),
+        content: state.map(
+          initial: (value) {
+            return Center(child: m.CircularProgressIndicator());
+          },
+          loadInProgress: (value) {
+            final data = value.result;
+            return customItem(data);
+          },
+          loadSuccess: (value) {
+            final data = value.result;
+            return customItem(data);
+          },
+          loadFailure: (value) {
+            return Center(child: m.CircularProgressIndicator());
+          },
+        ));
+  }
+
+  Widget customItem(List<Ressources>? data) {
+    return data!.isEmpty
+        ? const CustomEmptyPage()
+        : CustomGridview(
+            itemCount: data.isNotEmpty
+                ? (ref.watch(dataPageProvider) != null)
+                    ? ref.watch(dataPageProvider)!.length
+                    : getPaginateData(data).perPage
+                : data.length,
+            itemBuilder: (context, index) {
+              final e = (ref.watch(dataPageProvider) != null)
+                  ? ref.watch(dataPageProvider)!.elementAt(index)
+                  : getPaginateData(data).data.elementAt(index);
+
+              return CustomCardItem(
+                data: e,
+                width: 290,
+              );
+            },
+          );
+  }
+}

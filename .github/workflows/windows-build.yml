@@ -1,0 +1,159 @@
+name: Flutter Windows Build
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      # 📥 Récupérer le code
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      # 🛠️ MSBuild (nécessaire pour Windows)
+      - name: 🛠️ Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # 🛠️ Installer Flutter
+      - name: 🛠️ Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.5'
+          channel: 'stable'
+
+      # 🔍 Vérification environnement
+      - name: 🔍 Flutter doctor
+        run: flutter doctor -v
+
+      # 🪟 Activer Windows desktop
+      - name: 🪟 Activer Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      # 🧹 Clean
+      - name: 🧹 Clean projet
+        run: flutter clean
+
+      # 📦 Dépendances
+      - name: 📦 Installer les dépendances
+        run: flutter pub get
+
+      # 🏗️ Build Windows
+      - name: 🏗️ Build Windows
+        run: flutter build windows --release
+
+      # 📦 ZIP (debug / backup)
+      - name: 📦 Zip build
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath windows-build.zip
+
+      - name: 📤 Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: windows-build.zip
+
+      # 🧰 Installer Inno Setup
+      - name: 🧰 Installer Inno Setup
+        run: choco install innosetup -y
+
+      # 🏗️ Build installateur (depuis installer.iss dans ton repo)
+      - name: 🏗️ Build installer
+        run: iscc installer.iss
+
+      # 📤 Upload installateur
+      - name: 📤 Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: seeva-installer
+          path: output/Seeva-Setup-v1.0.0.exe
+
+# name: Flutter Windows Build
+
+# env:
+#   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
+
+# jobs:
+#   build-windows:
+#     runs-on: windows-latest
+
+#     steps:
+#       - name: 📥 Checkout du code
+#         uses: actions/checkout@v4
+
+#       - name: 🛠️ Setup MSBuild
+#         uses: microsoft/setup-msbuild@v2
+
+#       - name: 🛠️ Setup Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: '3.38.5'
+#           channel: 'stable'
+
+#       - name: 🔍 Flutter doctor
+#         run: flutter doctor -v
+
+#       - name: 🪟 Activer Windows desktop
+#         run: flutter config --enable-windows-desktop
+
+#       - name: 🧹 Clean projet
+#         run: flutter clean
+
+#       - name: 📦 Installer les dépendances
+#         run: flutter pub get
+
+#       - name: 🏗️ Build Windows
+#         run: flutter build windows --release
+
+#       # 📦 ZIP classique (optionnel mais utile)
+#       - name: 📦 Zip build
+#         run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath windows-build.zip
+
+#       - name: 📤 Upload ZIP
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: windows-build
+#           path: windows-build.zip
+
+#       # 🔥 INSTALLATEUR WINDOWS (PRO)
+#       - name: 🧰 Installer Inno Setup
+#         run: choco install innosetup -y
+
+#       - name: 📝 Générer script Inno Setup
+#         run: |
+#           echo [Setup] > installer.iss
+#           echo AppName=Seeva >> installer.iss
+#           echo AppVersion=1.0 >> installer.iss
+#           echo AppPublisher=Seeva >> installer.iss
+#           echo DefaultDirName={pf}\Seeva >> installer.iss
+#           echo DefaultGroupName=Seeva >> installer.iss
+#           echo OutputDir=output >> installer.iss
+#           echo OutputBaseFilename=seeva-installer >> installer.iss
+#           echo >> installer.iss
+#           echo [Files] >> installer.iss
+#           echo Source: "build\\windows\\x64\\runner\\Release\\*"; DestDir: "{app}"; Flags: recursesubdirs >> installer.iss
+#           echo >> installer.iss
+#           echo [Icons] >> installer.iss
+#           echo Name: "{group}\Seeva"; Filename: "{app}\example.exe" >> installer.iss
+#           echo Name: "{commondesktop}\Seeva "; Filename: "{app}\example.exe" >> installer.iss
+
+#       - name: 🏗️ Build installer
+#         run: iscc installer.iss
+
+#       - name: 📤 Upload Installer
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: seeva-installer
+#           path: output/seeva-installer.exe
